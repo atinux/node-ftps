@@ -57,21 +57,15 @@ FTP.prototype.exec = function (cmds, callback) {
 
 	var lftp = spawn('lftp', ['-c', cmd]);
 	var data = "";
-	var error = false;
+	var error = "";
 	lftp.stdout.on('data', function (res) {
 		data += res;
 	});
 	lftp.stderr.on('data', function (res) {
-		if (!error) {
-			error = true;
-			callback({ error: res.toString(), data: data });
-		}
+		error += res;
 	});
 	lftp.on('exit', function (code) {
-		if (!code && !error)
-			callback(null, data);
-		else if (!error)
-			callback({ data: data });
+		callback(null, { error: error || null, data: data });
 	});
 	return this;
 };
@@ -88,6 +82,21 @@ FTP.prototype.cd = function (directory) { return this.raw('cd ' + directory); };
 FTP.prototype.cat = function (path) { return this.raw('cat ' + path); };
 FTP.prototype.put = function (path) { return this.raw('put ' + path); };
 FTP.prototype.addFile = FTP.prototype.put;
-FTP.prototype.rm = function (path) { return this.raw('rm ' + path); };
+FTP.prototype.get = function (remotePath, localPath) {
+	if (!remotePath)
+		return this;
+	if (!localPath)
+		return this.raw('get '+remotePath);
+	return this.raw('get '+remotePath+' -o '+localPath);
+};
+FTP.prototype.getFile = FTP.prototype.getFile;
+FTP.prototype.mv = function (from, to) {
+	if (!from || !to)
+		return this;
+	return this.raw('rm ' + from + ' ' + to);
+};
+FTP.prototype.move = FTP.prototype.mv;
+FTP.prototype.rm = function () { return this.raw('rm ' + Array.prototype.slice.call(arguments).join(' ')); };
+FTP.prototype.remove = FTP.prototype.rm;
 
 module.exports = FTP;

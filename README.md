@@ -40,7 +40,9 @@ ftps.pwd()
 ftps.cd(directory)
 ftps.cat(pathToRemoteFiles)
 ftps.put(pathToLocalFile) // alias: addFile
-ftps.rm(pathToRemoteFiles)
+ftps.get(pathToRemoteFile, [pathToLocalFile]) // download remote file and save to local path (if not given, use same name as remote file), alias : getFile
+ftps.mv(from, to) // alias move
+ftps.rm(file1, file2, ...) // alias remove
 </pre>
 
 Execute a command on the remote server :
@@ -51,9 +53,15 @@ For information, ls, pwd, ... rm are just some alias of raw() method.
 
 Run the commands !
 <pre>ftps.exec(function (err, res) {
-  // err is stderr from lftp or null if no errors
-  // res is stdout from lftp command
+  // err will be null (to respect async convention)
+  // res is an hash with { error: stderr || null, data: stdout }
 });</pre>
+
+For information, if somes commands fails, it will don't stop the next commands, example :
+<pre>ftps.cd('non-existing-dir/').affFile('./test.txt').exec(console.log);
+// Will add file on ~/ and give : { error: 'cd: L\'accès a échoué : 550 /nian: No such file or directory\n',
+  data: '' }
+// So...be cautious :)</pre>
 
 Why?
 ----
