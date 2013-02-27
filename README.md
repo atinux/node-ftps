@@ -40,12 +40,12 @@ ftps.pwd()
 ftps.cd(directory)
 ftps.cat(pathToRemoteFiles)
 ftps.put(pathToLocalFile) // alias: addFile
-ftps.get(pathToRemoteFile, [pathToLocalFile]) // download remote file and save to local path (if not given, use same name as remote file), alias : getFile
+ftps.get(pathToRemoteFile, [pathToLocalFile]) // download remote file and save to local path (if not given, use same name as remote file), alias: getFile
 ftps.mv(from, to) // alias move
 ftps.rm(file1, file2, ...) // alias remove
 </pre>
 
-Execute a command on the remote server :
+Execute a command on the remote server:
 <pre>ftps.raw('ls -l')</pre>
 To see all available commands -> http://lftp.yar.ru/lftp-man.html
 
@@ -57,9 +57,9 @@ Run the commands !
   // res is an hash with { error: stderr || null, data: stdout }
 });</pre>
 
-For information, if somes commands fails, it will don't stop the next commands, example :
+For information, if somes commands fails, it will don't stop the next commands, example:
 <pre>ftps.cd('non-existing-dir/').affFile('./test.txt').exec(console.log);
-// Will add file on ~/ and give : { error: 'cd: L\'accès a échoué : 550 /nian: No such file or directory\n',
+// Will add file on ~/ and give: { error: 'cd: L\'accès a échoué : 550 /nian: No such file or directory\n',
   data: '' }
 // So...be cautious :)</pre>
 
