@@ -80,7 +80,13 @@ FTP.prototype.ls = function () { return this.raw('ls'); };
 FTP.prototype.pwd = function () { return this.raw('pwd'); };
 FTP.prototype.cd = function (directory) { return this.raw('cd ' + directory); };
 FTP.prototype.cat = function (path) { return this.raw('cat ' + path); };
-FTP.prototype.put = function (path) { return this.raw('put ' + path); };
+FTP.prototype.put = function (localPath, remotePath) {
+	if (!localPath)
+		return this;
+	if (!remotePath)
+		return this.raw('put '+localPath);
+	return this.raw('put '+localPath+' -o '+remotePath
+};
 FTP.prototype.addFile = FTP.prototype.put;
 FTP.prototype.get = function (remotePath, localPath) {
 	if (!remotePath)

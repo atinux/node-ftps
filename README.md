@@ -39,7 +39,7 @@ ftps.ls()
 ftps.pwd()
 ftps.cd(directory)
 ftps.cat(pathToRemoteFiles)
-ftps.put(pathToLocalFile) // alias: addFile
+ftps.put(pathToLocalFile, [pathToRemoteFile]) // alias: addFile
 ftps.get(pathToRemoteFile, [pathToLocalFile]) // download remote file and save to local path (if not given, use same name as remote file), alias : getFile
 ftps.mv(from, to) // alias move
 ftps.rm(file1, file2, ...) // alias remove
