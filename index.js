@@ -83,7 +83,7 @@ FTP.prototype.put = function (localPath, remotePath) {
 		return this;
 	if (!remotePath)
 		return this.raw('put '+localPath);
-	return this.raw('put '+localPath+' -o '+remotePath
+	return this.raw('put '+localPath+' -o '+remotePath);
 };
 FTP.prototype.addFile = FTP.prototype.put;
 FTP.prototype.get = function (remotePath, localPath) {
