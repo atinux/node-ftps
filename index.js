@@ -36,8 +36,6 @@ FTP.prototype.initialize = function (options) {
 	if (!opts.password) throw new Error('You need to set a password.');
 	if (typeof options.protocol === 'string' && options.protocol && opts.host.indexOf(options.protocol) !== 0)
 		opts.host = options.protocol + '://' + options.host;
-	else
-		opts.host = 'ftp://' + options.host;
 	this.options = opts;
 };
 
