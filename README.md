@@ -62,7 +62,7 @@ ftps.exec(function (err, res) {
 ```
 
 For information, if somes commands fails, it will don't stop the next commands, example:
-```
+``` js
 ftps.cd('non-existing-dir/').affFile('./test.txt').exec(console.log);
 // Will add file on ~/ and give: { error: 'cd: L\'accès a échoué : 550 /nian: No such file or directory\n',
   data: '' }
