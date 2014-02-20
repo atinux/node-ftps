@@ -62,8 +62,14 @@ FTP.prototype.exec = function (cmds, callback) {
 	lftp.stderr.on('data', function (res) {
 		error += res;
 	});
+	lftp.on('error', function ( err ) {
+		if (callback)
+			callback(err, { error: error || null, data: data });
+		callback = null; // Make sure callback is only called once, whether 'exit' event is triggered or not.
+	});
 	lftp.on('exit', function (code) {
-		callback(null, { error: error || null, data: data });
+		if (callback)
+			callback(null, { error: error || null, data: data });
 	});
 	return this;
 };
