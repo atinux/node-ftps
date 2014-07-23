@@ -2,7 +2,7 @@ var spawn = require('child_process').spawn,
 	_ = require('underscore');
 
 var escapeshell = function(cmd) {
-  return '"'+cmd.replace(/(["\s'$`\\])/g,'\\$1')+'"';
+  return cmd.replace(/(["\s'$`\\])/g,'\\$1');
 };
 
 /*
@@ -49,7 +49,7 @@ FTP.prototype.exec = function (cmds, callback) {
 	if (!callback)
 		throw new Error('callback is missing to exec() function.')
 	var cmd = '';
-	cmd += 'open -u '+ escapeshell(this.options.username) + ',' + escapeshell(this.options.password) + ' ' + this.options.host + ';';
+	cmd += 'open -u "'+ escapeshell(this.options.username) + '","' + escapeshell(this.options.password) + '" "' + this.options.host + '";';
 	cmd += this.cmds.join(';');
 	this.cmds = [];
 
