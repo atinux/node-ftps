@@ -18,7 +18,7 @@ npm install ftps
 Usage
 -----
 
-```` js
+``` js
 var FTPS = require('ftps');
 var ftps = new FTPS({
   host: 'domain.com', // required
@@ -61,7 +61,7 @@ ftps.exec(function (err, res) {
 });
 ```
 
-For information, if somes commands fails, it will don't stop the next commands, example:
+Also, take note that if a command fails it will not stop the next commands from executing, for example:
 ``` js
 ftps.cd('non-existing-dir/').affFile('./test.txt').exec(console.log);
 /*
