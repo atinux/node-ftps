@@ -13,6 +13,8 @@ var escapeshell = function(cmd) {
 **   password: 'Test', // required
 **   protocol: 'sftp', // optional, values : 'ftp', 'sftp', 'ftps', ... default: 'ftp'
 **   // protocol is added on beginning of host, ex : sftp://domain.com in this case
+**   port: '28', // optional
+**   // port is added at the end of the host, ex : sftp://domain.com:28 in this case
 ** }
 **
 ** Usage :
@@ -30,12 +32,14 @@ FTP.prototype.initialize = function (options) {
 		username: '',
 		password: ''
 	};
-	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password');
+	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port');
 	if (!opts.host) throw new Error('You need to set a host.');
 	if (!opts.username) throw new Error('You need to set an username.');
 	if (!opts.password) throw new Error('You need to set a password.');
 	if (typeof options.protocol === 'string' && options.protocol && opts.host.indexOf(options.protocol) !== 0)
 		opts.host = options.protocol + '://' + options.host;
+  if (opts.port)
+    opts.host = opts.host + ':' + opts.port;
 	this.options = opts;
 };
 
