@@ -103,7 +103,7 @@ FTP.prototype.get = function (remotePath, localPath) {
 		return this.raw('get '+escapeshell(remotePath));
 	return this.raw('get '+escapeshell(remotePath)+' -o '+escapeshell(localPath));
 };
-FTP.prototype.getFile = FTP.prototype.getFile;
+FTP.prototype.getFile = FTP.prototype.get;
 FTP.prototype.mv = function (from, to) {
 	if (!from || !to)
 		return this;
