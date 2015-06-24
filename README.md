@@ -65,7 +65,7 @@ ftps.exec(function (err, res) {
 
 Also, take note that if a command fails it will not stop the next commands from executing, for example:
 ``` js
-ftps.cd('non-existing-dir/').affFile('./test.txt').exec(console.log);
+ftps.cd('non-existing-dir/').addFile('./test.txt').exec(console.log);
 /*
 Will add file on ~/ and give:
 {
