@@ -107,7 +107,7 @@ FTP.prototype.getFile = FTP.prototype.get;
 FTP.prototype.mv = function (from, to) {
 	if (!from || !to)
 		return this;
-	return this.raw('rm ' + escapeshell(from) + ' ' + escapeshell(to));
+	return this.raw('mv ' + escapeshell(from) + ' ' + escapeshell(to));
 };
 FTP.prototype.move = FTP.prototype.mv;
 FTP.prototype.rm = function () { return this.raw('rm ' + Array.prototype.slice.call(arguments).map(escapeshell).join(' ')); };
