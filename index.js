@@ -112,5 +112,6 @@ FTP.prototype.mv = function (from, to) {
 FTP.prototype.move = FTP.prototype.mv;
 FTP.prototype.rm = function () { return this.raw('rm ' + Array.prototype.slice.call(arguments).map(escapeshell).join(' ')); };
 FTP.prototype.remove = FTP.prototype.rm;
+FTP.prototype.rmdir = function () { return this.raw('rmdir ' + Array.prototype.slice.call(arguments).map(escapeshell).join(' ')); };
 
 module.exports = FTP;
