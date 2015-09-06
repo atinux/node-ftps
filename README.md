@@ -47,6 +47,7 @@ ftps.put(pathToLocalFile, [pathToRemoteFile]) // alias: addFile
 ftps.get(pathToRemoteFile, [pathToLocalFile]) // download remote file and save to local path (if not given, use same name as remote file), alias: getFile
 ftps.mv(from, to) // alias move
 ftps.rm(file1, file2, ...) // alias remove
+ftps.rmdir(directory1, directory2, ...)
 ```
 
 Execute a command on the remote server:
@@ -61,6 +62,7 @@ ftps.exec(function (err, res) {
   // err will be null (to respect async convention)
   // res is an hash with { error: stderr || null, data: stdout }
 });
+// exec() return the child process of the spwan() method
 ```
 
 Also, take note that if a command fails it will not stop the next commands from executing, for example:
