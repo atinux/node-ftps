@@ -75,7 +75,7 @@ FTP.prototype.exec = function (cmds, callback) {
 		if (callback)
 			callback(null, { error: error || null, data: data });
 	});
-	return this;
+	return lftp;
 };
 
 FTP.prototype.raw = function (cmd) {
