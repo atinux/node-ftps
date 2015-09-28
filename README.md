@@ -28,6 +28,7 @@ var ftps = new FTPS({
   // protocol is added on beginning of host, ex : sftp://domain.com in this case
   port: 22 // optional
   // port is added to the end of the host, ex: sftp://domain.com:22 in this case
+  escape: true, // optional, used for escaping shell characters (space, $, etc.), default: true
 });
 // Do some amazing things
 ftps.cd('myDir').addFile(__dirname + '/test.txt').exec(console.log);
