@@ -41,10 +41,14 @@ FTP.prototype.initialize = function (options) {
 };
 
 FTP.prototype.escapeshell = function(cmd) {
+	return cmd.replace(/(["\s'$`\\])/g,'\\$1');
+};
+FTP.prototype._escapeshell = function(cmd) {
 	if (this.options.escape)
-  	return cmd.replace(/(["\s'$`\\])/g,'\\$1');
+		return this.escapeshell(cmd);
 	return cmd;
 };
+
 
 FTP.prototype.exec = function (cmds, callback) {
 	if (typeof cmds === 'string')
@@ -56,7 +60,7 @@ FTP.prototype.exec = function (cmds, callback) {
 	if (!callback)
 		throw new Error('callback is missing to exec() function.')
 	var cmd = '';
-	cmd += 'open -u "'+ this.escapeshell(this.options.username) + '","' + this.escapeshell(this.options.password) + '" "' + this.options.host + '";';
+	cmd += 'open -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '" "' + this.options.host + '";';
 	cmd += this.cmds.join(';');
 	this.cmds = [];
 
@@ -89,32 +93,32 @@ FTP.prototype.raw = function (cmd) {
 
 FTP.prototype.ls = function () { return this.raw('ls'); };
 FTP.prototype.pwd = function () { return this.raw('pwd'); };
-FTP.prototype.cd = function (directory) { return this.raw('cd ' + this.escapeshell(directory)); };
-FTP.prototype.cat = function (path) { return this.raw('cat ' + this.escapeshell(path)); };
+FTP.prototype.cd = function (directory) { return this.raw('cd ' + this._escapeshell(directory)); };
+FTP.prototype.cat = function (path) { return this.raw('cat ' + this._escapeshell(path)); };
 FTP.prototype.put = function (localPath, remotePath) {
 	if (!localPath)
 		return this;
 	if (!remotePath)
-		return this.raw('put '+this.escapeshell(localPath));
-	return this.raw('put '+this.escapeshell(localPath)+' -o '+this.escapeshell(remotePath));
+		return this.raw('put '+this._escapeshell(localPath));
+	return this.raw('put '+this._escapeshell(localPath)+' -o '+this._escapeshell(remotePath));
 };
 FTP.prototype.addFile = FTP.prototype.put;
 FTP.prototype.get = function (remotePath, localPath) {
 	if (!remotePath)
 		return this;
 	if (!localPath)
-		return this.raw('get '+this.escapeshell(remotePath));
-	return this.raw('get '+this.escapeshell(remotePath)+' -o '+this.escapeshell(localPath));
+		return this.raw('get '+this._escapeshell(remotePath));
+	return this.raw('get '+this._escapeshell(remotePath)+' -o '+this._escapeshell(localPath));
 };
 FTP.prototype.getFile = FTP.prototype.get;
 FTP.prototype.mv = function (from, to) {
 	if (!from || !to)
 		return this;
-	return this.raw('mv ' + this.escapeshell(from) + ' ' + this.escapeshell(to));
+	return this.raw('mv ' + this._escapeshell(from) + ' ' + this._escapeshell(to));
 };
 FTP.prototype.move = FTP.prototype.mv;
-FTP.prototype.rm = function () { return this.raw('rm ' + Array.prototype.slice.call(arguments).map(this.escapeshell).join(' ')); };
+FTP.prototype.rm = function () { return this.raw('rm ' + Array.prototype.slice.call(arguments).map(this._escapeshell).join(' ')); };
 FTP.prototype.remove = FTP.prototype.rm;
-FTP.prototype.rmdir = function () { return this.raw('rmdir ' + Array.prototype.slice.call(arguments).map(this.escapeshell).join(' ')); };
+FTP.prototype.rmdir = function () { return this.raw('rmdir ' + Array.prototype.slice.call(arguments).map(this._escapeshell).join(' ')); };
 
 module.exports = FTP;

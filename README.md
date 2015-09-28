@@ -51,6 +51,12 @@ ftps.rm(file1, file2, ...) // alias remove
 ftps.rmdir(directory1, directory2, ...)
 ```
 
+If you want to escape some arguments because you used escape: false in the options:
+```js
+ftps.escapeshell('My folder');
+// Return 'My\\ \\$folder'
+```
+
 Execute a command on the remote server:
 <pre>ftps.raw('ls -l')</pre>
 To see all available commands -> http://lftp.yar.ru/lftp-man.html
