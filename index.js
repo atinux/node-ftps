@@ -58,7 +58,7 @@ FTP.prototype.exec = function (cmds, callback) {
 	if (typeof cmds === 'function' && !callback)
 		callback = cmds;
 	if (!callback)
-		throw new Error('callback is missing to exec() function.')
+		throw new Error('callback is missing to exec() function.');
 	var cmd = '';
 	cmd += 'open -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '" "' + this.options.host + '";';
 	cmd += this.cmds.join(';');
