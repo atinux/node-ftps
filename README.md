@@ -8,6 +8,10 @@ Requirements
 
 You need to have the executable `lftp` installed on your computer.
 
+[LFTP Homepage](http://lftp.yar.ru/)
+
+[LFTP For Windows](https://nwgat.ninja/lftp-for-windows/)
+
 Installation
 -----------
 
@@ -28,16 +32,19 @@ var ftps = new FTPS({
   // protocol is added on beginning of host, ex : sftp://domain.com in this case
   port: 22, // optional
   // port is added to the end of the host, ex: sftp://domain.com:22 in this case
-  escape: true // optional, used for escaping shell characters (space, $, etc.), default: true
+  escape: true, // optional, used for escaping shell characters (space, $, etc.), default: true
+  retries: 2, // Optional, defaults to 1 (1 = no retries, 0 = unlimited retries)
+  timeout: 10,
+  requiresPassword: true // Optional, defaults to true
 });
 // Do some amazing things
-ftps.cd('myDir').addFile(__dirname + '/test.txt').exec(console.log);
+ftps.cd('some_directory').addFile(__dirname + '/test.txt').exec(console.log);
 ```
 
 Some documentation
 ------------------
 
-Here are chainable fonctions :
+Here are some of the chainable functions :
 
 ``` js
 ftps.ls()
@@ -51,19 +58,22 @@ ftps.rm(file1, file2, ...) // alias remove
 ftps.rmdir(directory1, directory2, ...)
 ```
 
-If you want to escape some arguments because you used escape: false in the options:
+If you want to escape some arguments because you used "escape: false" in the options:
 ```js
 ftps.escapeshell('My folder');
 // Return 'My\\ \\$folder'
 ```
 
 Execute a command on the remote server:
-<pre>ftps.raw('ls -l')</pre>
-To see all available commands -> http://lftp.yar.ru/lftp-man.html
+```js
+ftps.raw('ls -l')
+```
+
+To see all available commands: [LFTP Commands](http://lftp.yar.ru/lftp-man.html)
 
 For information, ls, pwd, ... rm are just some alias of raw() method.
 
-Run the commands !
+Run the commands
 ``` js
 ftps.exec(function (err, res) {
   // err will be null (to respect async convention)
@@ -89,5 +99,6 @@ So...be cautious because ./test.txt has been added
 Why?
 ----
 
-Just because I didn't found sftp and ftps module in node.js, it's pretty dirty to spawn `lftp` command, but sorry, it does the work for me, maybe for you too :)
-Ah and sorry for tests, it's a hack, so I just do some manual tests.
+Because I didn't find an sftp and ftps module in node.js, this is just a pretty simple spawn of the `lftp` command, but it works for me, and hopefully for you too :)
+
+Currently it has no tests but pull requests are welcome.
