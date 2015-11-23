@@ -15,7 +15,8 @@ var spawn = require('child_process').spawn,
 **	 timeout: 10, // Optional, Time before failing a connection attempt. Defaults to 10
 **	 retryInterval: 5, // Optional, Time in seconds between attempts. Defaults to 5
 **	 retryMultiplier: 1, // Optional, Multiplier by which retryInterval is multiplied each time new attempt fails. Defaults to 1
-**	 requiresPassword: true // Optional, defaults to true
+**	 requiresPassword: true, // Optional, defaults to true
+**   autoConfirm: true // Optional, defaults to false
 ** }
 **
 ** Usage :
@@ -37,11 +38,12 @@ FTP.prototype.initialize = function (options) {
 		timeout: 10, // Time before failing a connection attempt
 		retryInterval: 5, // Time in seconds between attempts
 		retryIntervalMultiplier: 1, // Multiplier by which retryInterval is multiplied each time new attempt fails
-		requiresPassword: true // Supports Anonymous FTP
+		requiresPassword: true, // Supports Anonymous FTP
+		autoConfirm: false // Auto confirm ssl certificate
 	}
 	
 	// Extend options with defaults
-	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword')
+	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm')
 	
 	// Validation
 	if (!opts.host) throw new Error('You need to set a host.')
@@ -79,6 +81,10 @@ FTP.prototype.exec = function (cmds, callback) {
 		throw new Error('Callback is missing to exec() function.')
 	
 	var cmd = ''
+	
+	// Only support SFTP or FISH for ssl autoConfirm
+	if((this.options.protocol.toLowerCase() === "sftp" || this.options.protocol.toLowerCase() === "fish") && this.options.autoConfirm)
+		cmd += 'set ' + this.options.protocol.toLowerCase() + ':auto-confirm yes;'
 	
 	cmd += 'set net:max-retries ' + this.options.retries + ';'
 	cmd += 'set net:timeout ' + this.options.timeout + ';'

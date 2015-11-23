@@ -35,7 +35,8 @@ var ftps = new FTPS({
   escape: true, // optional, used for escaping shell characters (space, $, etc.), default: true
   retries: 2, // Optional, defaults to 1 (1 = no retries, 0 = unlimited retries)
   timeout: 10,
-  requiresPassword: true // Optional, defaults to true
+  requiresPassword: true, // Optional, defaults to true
+  autoConfirm: true // Optional, is used to auto confirm ssl questions on sftp or fish protocols, defaults to false
 });
 // Do some amazing things
 ftps.cd('some_directory').addFile(__dirname + '/test.txt').exec(console.log);
