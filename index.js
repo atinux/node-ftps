@@ -15,8 +15,9 @@ var spawn = require('child_process').spawn,
 **	 timeout: 10, // Optional, Time before failing a connection attempt. Defaults to 10
 **	 retryInterval: 5, // Optional, Time in seconds between attempts. Defaults to 5
 **	 retryMultiplier: 1, // Optional, Multiplier by which retryInterval is multiplied each time new attempt fails. Defaults to 1
-**	 requiresPassword: true, // Optional, defaults to true
-**   autoConfirm: true // Optional, defaults to false
+**	 requiresPassword: true, // Optional, defaults to true	
+**   autoConfirm: true, // Optional, defaults to false
+**	cwd: '' // Optional, defaults to the directory from where the script is executed
 ** }
 **
 ** Usage :
@@ -39,11 +40,12 @@ FTP.prototype.initialize = function (options) {
 		retryInterval: 5, // Time in seconds between attempts
 		retryIntervalMultiplier: 1, // Multiplier by which retryInterval is multiplied each time new attempt fails
 		requiresPassword: true, // Supports Anonymous FTP
-		autoConfirm: false // Auto confirm ssl certificate
+		autoConfirm: false, // Auto confirm ssl certificate,
+		cwd: '' // Use a different working directory
 	}
 	
 	// Extend options with defaults
-	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm')
+	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd')
 	
 	// Validation
 	if (!opts.host) throw new Error('You need to set a host.')
@@ -94,8 +96,13 @@ FTP.prototype.exec = function (cmds, callback) {
 	cmd += 'open -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '" "' + this.options.host + '";'
 	cmd += this.cmds.join(';')
 	this.cmds = []
+	
+	var spawnoptions;
+	if(this.options.cwd){
+		spawnoptions = {cwd: this.options.cwd};
+	}
 
-	var lftp = spawn('lftp', ['-c', cmd])
+	var lftp = spawn('lftp', ['-c', cmd], spawnoptions)
 	var data = ""
 	var error = ""
 	lftp.stdout.on('data', function (res) {
