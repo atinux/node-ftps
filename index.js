@@ -17,7 +17,8 @@ var spawn = require('child_process').spawn,
 **	 retryMultiplier: 1, // Optional, Multiplier by which retryInterval is multiplied each time new attempt fails. Defaults to 1
 **	 requiresPassword: true, // Optional, defaults to true	
 **   autoConfirm: true, // Optional, defaults to false
-**	cwd: '' // Optional, defaults to the directory from where the script is executed
+**	cwd: '', // Optional, defaults to the directory from where the script is executed
+**   additionalLftpCommands: "" // Additional commands to pass to lftp, splitted by ';'
 ** }
 **
 ** Usage :
@@ -41,11 +42,12 @@ FTP.prototype.initialize = function (options) {
 		retryIntervalMultiplier: 1, // Multiplier by which retryInterval is multiplied each time new attempt fails
 		requiresPassword: true, // Supports Anonymous FTP
 		autoConfirm: false, // Auto confirm ssl certificate,
-		cwd: '' // Use a different working directory
+		cwd: '', // Use a different working directory
+		additionalLftpCommands: "" // Additional commands to pass to lftp, splitted by ';'
 	}
 	
 	// Extend options with defaults
-	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd')
+	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands')
 	
 	// Validation
 	if (!opts.host) throw new Error('You need to set a host.')
@@ -92,7 +94,7 @@ FTP.prototype.exec = function (cmds, callback) {
 	cmd += 'set net:timeout ' + this.options.timeout + ';'
 	cmd += 'set net:reconnect-interval-base ' + this.options.retryInterval + ';'
 	cmd += 'set net:reconnect-interval-multiplier ' + this.options.retryIntervalMultiplier + ';'
-	
+	cmd += this.options.additionalLftpCommands + ";"
 	cmd += 'open -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '" "' + this.options.host + '";'
 	cmd += this.cmds.join(';')
 	this.cmds = []
