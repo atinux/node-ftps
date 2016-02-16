@@ -15,7 +15,7 @@ var spawn = require('child_process').spawn,
 **	 timeout: 10, // Optional, Time before failing a connection attempt. Defaults to 10
 **	 retryInterval: 5, // Optional, Time in seconds between attempts. Defaults to 5
 **	 retryMultiplier: 1, // Optional, Multiplier by which retryInterval is multiplied each time new attempt fails. Defaults to 1
-**	 requiresPassword: true, // Optional, defaults to true	
+**	 requiresPassword: true, // Optional, defaults to true
 **   autoConfirm: true, // Optional, defaults to false
 **	cwd: '', // Optional, defaults to the directory from where the script is executed
 **   additionalLftpCommands: "" // Additional commands to pass to lftp, splitted by ';'
@@ -45,16 +45,16 @@ FTP.prototype.initialize = function (options) {
 		cwd: '', // Use a different working directory
 		additionalLftpCommands: "" // Additional commands to pass to lftp, splitted by ';'
 	}
-	
+
 	// Extend options with defaults
 	var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands')
-	
+
 	// Validation
 	if (!opts.host) throw new Error('You need to set a host.')
 	if (!opts.username) throw new Error('You need to set an username.')
 	if (opts.requiresPassword === true && !opts.password) throw new Error('You need to set a password.')
 	if (options.protocol && typeof options.protocol !== 'string') throw new Error('Protocol needs to be of type string.')
-	
+
 	// Setting options
 	if (options.protocol && opts.host.indexOf(options.protocol + '://') !== 0)
 		opts.host = options.protocol + '://' + options.host
@@ -83,13 +83,13 @@ FTP.prototype.exec = function (cmds, callback) {
 		callback = cmds
 	if (!callback)
 		throw new Error('Callback is missing to exec() function.')
-	
+
 	var cmd = ''
-	
+
 	// Only support SFTP or FISH for ssl autoConfirm
 	if((this.options.protocol.toLowerCase() === "sftp" || this.options.protocol.toLowerCase() === "fish") && this.options.autoConfirm)
 		cmd += 'set ' + this.options.protocol.toLowerCase() + ':auto-confirm yes;'
-	
+
 	cmd += 'set net:max-retries ' + this.options.retries + ';'
 	cmd += 'set net:timeout ' + this.options.timeout + ';'
 	cmd += 'set net:reconnect-interval-base ' + this.options.retryInterval + ';'
@@ -98,7 +98,7 @@ FTP.prototype.exec = function (cmds, callback) {
 	cmd += 'open -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '" "' + this.options.host + '";'
 	cmd += this.cmds.join(';')
 	this.cmds = []
-	
+
 	var spawnoptions;
 	if(this.options.cwd){
 		spawnoptions = {cwd: this.options.cwd};
@@ -157,7 +157,7 @@ FTP.prototype.mv = function (from, to) {
 	return this.raw('mv ' + this._escapeshell(from) + ' ' + this._escapeshell(to))
 }
 FTP.prototype.move = FTP.prototype.mv
-FTP.prototype.rm = function () { return this.raw('rm ' + Array.prototype.slice.call(arguments).map(this._escapeshell).join(' ')) }
+FTP.prototype.rm = function () { return this.raw('rm ' + Array.prototype.slice.call(arguments).map(this._escapeshell.bind(this)).join(' ')) }
 FTP.prototype.remove = FTP.prototype.rm
 FTP.prototype.rmdir = function () { return this.raw('rmdir ' + Array.prototype.slice.call(arguments).map(this._escapeshell).join(' ')) }
 
