@@ -65,6 +65,7 @@ FTP.prototype.initialize = function (options) {
 }
 
 FTP.prototype.escapeshell = function(cmd) {
+	if (typeof cmd !== 'string') return '';
 	return cmd.replace(/(["\s'$`\\])/g,'\\$1')
 }
 FTP.prototype._escapeshell = function(cmd) {
