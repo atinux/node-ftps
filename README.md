@@ -37,7 +37,7 @@ var ftps = new FTPS({
   timeout: 10,
   requiresPassword: true, // Optional, defaults to true
   autoConfirm: true, // Optional, is used to auto confirm ssl questions on sftp or fish protocols, defaults to false
-  cwd: '' // Optional, defaults to the directory from where the script is executed 
+  cwd: '' // Optional, defaults to the directory from where the script is executed
 });
 // Do some amazing things
 ftps.cd('some_directory').addFile(__dirname + '/test.txt').exec(console.log);
@@ -58,6 +58,13 @@ ftps.get(pathToRemoteFile, [pathToLocalFile]) // download remote file and save t
 ftps.mv(from, to) // alias move
 ftps.rm(file1, file2, ...) // alias remove
 ftps.rmdir(directory1, directory2, ...)
+ftps.mirror({
+  remoteDir: '.', // optional, default: .
+  localDir: '.', // optional: default: .
+  filter: /\.pdf$/, // optional, filter the files synchronized
+  parallel: true / Integer, // optional, default: false
+  upload: true, // optional, default: false, to upload the files from the locaDir to the remoteDir
+})
 ```
 
 If you want to escape some arguments because you used "escape: false" in the options:

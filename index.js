@@ -165,11 +165,18 @@ FTP.prototype.mirror = function (opts) {
 	opts = opts || {};
 	opts.remoteDir = opts.remoteDir || '.';
 	opts.localDir = opts.localDir || '.';
+	opts.options = opts.options || '';
 	var raw = 'mirror';
-	if (opts.filter) {
-		raw += ' -i "'+String(opts.filter).slice(1, -1)+'"';
+	if (opts.upload === true) { raw += ' -R' }
+	if (opts.parallel === true) { raw += ' --parallel' }
+	if (typeof opts.parallel === 'number' && opts.parallel >= 1) { raw += ' --parallel=' + parseInt(opts.parallel, 10); }
+	if (opts.options) { raw += ' ' + opts.options; }
+	if (opts.filter) { raw += ' -i "'+String(opts.filter).slice(1, -1)+'"'; }
+	if (opts.upload === true) {
+		raw += ' ' + this._escapeshell(opts.localDir) + ' ' + this._escapeshell(opts.remoteDir);
+	} else {
+		raw += ' ' + this._escapeshell(opts.remoteDir) + ' ' + this._escapeshell(opts.localDir);
 	}
-	raw += ' ' + this._escapeshell(opts.remoteDir) + ' ' + this._escapeshell(opts.localDir);
 	return this.raw(raw);
 };
 
