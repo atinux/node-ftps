@@ -161,5 +161,16 @@ FTP.prototype.move = FTP.prototype.mv;
 FTP.prototype.rm = function () { return this.raw('rm ' + Array.prototype.slice.call(arguments).map(this._escapeshell.bind(this)).join(' ')); };
 FTP.prototype.remove = FTP.prototype.rm;
 FTP.prototype.rmdir = function () { return this.raw('rmdir ' + Array.prototype.slice.call(arguments).map(this._escapeshell.bind(this)).join(' ')); };
+FTP.prototype.mirror = function (opts) {
+	opts = opts || {};
+	opts.remoteDir = opts.remoteDir || '.';
+	opts.localDir = opts.localDir || '.';
+	var raw = 'mirror';
+	if (opts.filter) {
+		raw += ' -i "'+String(opts.filter).slice(1, -1)+'"';
+	}
+	raw += ' ' + this._escapeshell(opts.remoteDir) + ' ' + this._escapeshell(opts.localDir);
+	return this.raw(raw);
+};
 
 module.exports = FTP;
