@@ -96,7 +96,7 @@ FTP.prototype.exec = function (cmds, callback) {
 	cmd += 'set net:reconnect-interval-base ' + this.options.retryInterval + ';';
 	cmd += 'set net:reconnect-interval-multiplier ' + this.options.retryIntervalMultiplier + ';';
 	cmd += this.options.additionalLftpCommands + ";";
-	cmd += 'open -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '" "' + this.options.host + '";';
+	cmd += 'open -u "'+ this.options.username + '","' + this.options.password + '" "' + this.options.host + '";';
 	cmd += this.cmds.join(';');
 	this.cmds = [];
 
