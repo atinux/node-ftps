@@ -12,6 +12,8 @@ You need to have the executable `lftp` installed on your computer.
 
 [LFTP For Windows](https://nwgat.ninja/lftp-for-windows/)
 
+OSX install [brew](http://brew.sh/) then `brew install lftp`
+
 Installation
 -----------
 
