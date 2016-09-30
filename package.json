@@ -1,6 +1,6 @@
 {
 	"name": "ftps",
-	"version": "0.4.7",
+	"version": "0.4.8",
 	"author": {
 		"name"  : "Sébastien Chopin" ,
 		"email" : "atinux@gmail.com" ,
@@ -9,7 +9,10 @@
 	"contributors": [{
 		"name": "Steven Kissack",
 		"url": "https://github.com/stevokk"
-	}],
+	}, {
+		"name": "Tyler Finethy",
+		"url": "https://github.com/tylfin"
+		}],
 	"maintainers": ["atinux"],
 	"description": "FTP, FTPS and SFTP client for node.js, mainly a lftp wrapper.",
 	"keywords": ["ftp" , "ftps", "sftp", "node-ftp", "node-sftp", "node-ftps", "lftp"],
@@ -23,6 +26,8 @@
 	"dependencies": {
     "lodash": "^4.4.0"
 	},
-	"devDependencies": {},
+	"devDependencies": {
+	  "q": "^1.4.1"
+	},
 	"scripts" : {}
 }

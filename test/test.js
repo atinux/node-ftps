@@ -1,5 +1,6 @@
 // node-packages, requires mocha
 var assert = require('assert'),
+  Q = require('q'),
   _ = require('lodash');
 // FTPS package from index.js
 var FTPS = require('../index');
@@ -123,6 +124,43 @@ describe('FTPS', function() {
     });
     it('should not have TypeError: Cannot read property \'escape\' of undefined', function () {
       this.ftps.rmdir('foo');
+    });
+  });
+  describe('#exec()', function () {
+    beforeEach(function() {
+      // initialize multiple ftps connections for testing purposes
+      var fakeOptions = {
+        host: 'foo',
+        username: 'fake',
+        password: 'fake',
+        port: '11111',
+        protocol: 'sftp'
+      };
+      // arbitrarily picked 4, the on 'exit' bug only occurs when one LFTP
+      // exit causes other clients to prematurely terminate
+      this.ftps = new FTPS(fakeOptions);
+      this.ftps2 = new FTPS(fakeOptions);
+      this.ftps3 = new FTPS(fakeOptions);
+      this.ftps4 = new FTPS(fakeOptions);
+    });
+    it('should send error for each misconfigured ftps clients', function(done) {
+      // run ninvoke to async run all ftps connections and perform a ls that
+      // is expected to fail
+      promises = [];
+      promises.push(Q.ninvoke(this.ftps.ls(), 'exec'));
+      promises.push(Q.ninvoke(this.ftps2.ls(), 'exec'));
+      promises.push(Q.ninvoke(this.ftps3.ls(), 'exec'));
+      promises.push(Q.ninvoke(this.ftps4.ls(), 'exec'));
+      Q.all(promises).then(function(res) {
+        _.forEach(res, function(value) {
+          // assert that each one has a non-null error
+          assert.notEqual(value.error, null);
+        });
+        done();
+      }).fail(function(err) {
+        // propagate error to mocha on failure
+        done(err);
+      })
     });
   });
 });
