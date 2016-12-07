@@ -1,6 +1,8 @@
 var spawn = require('child_process').spawn,
 	_ = require('lodash');
 
+var dcp = require('duplex-child-process');
+
 /*
 ** Params :
 ** {
@@ -115,6 +117,7 @@ FTP.prototype.exec = function (cmds, callback) {
 	}
 
 	var lftp = spawn('lftp', ['-c', cmd], spawnoptions);
+
 	var data = "";
 	var error = "";
 	lftp.stdout.on('data', function (res) {
@@ -134,6 +137,26 @@ FTP.prototype.exec = function (cmds, callback) {
 	});
 	return lftp;
 };
+
+FTP.prototype.execAsStream = function(cmds) {
+	if (typeof cmds === 'string')
+		cmds = cmds.split(';');
+	if (Array.isArray(cmds))
+		this.cmds = this.cmds.concat(cmds);
+
+	var cmd = this.prepareLFTPOptions().concat(this.cmds).join(';');
+	this.cmds = [];
+
+	var spawnoptions;
+	if(this.options.cwd){
+		spawnoptions = {cwd: this.options.cwd};
+	}
+
+	var stream = dcp.spawn('lftp', ['-c', cmd], spawnoptions);
+
+        return stream;
+};
+
 
 FTP.prototype.raw = function (cmd) {
 	if (cmd && typeof cmd === 'string')

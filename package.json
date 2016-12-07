@@ -24,10 +24,11 @@
 		"node": ">=0.4.0"
 	},
 	"dependencies": {
-    "lodash": "^4.4.0"
-	},
-	"devDependencies": {
-	  "q": "^1.4.1"
-	},
-	"scripts" : {}
+                "duplex-child-process": "0.0.5",
+                "lodash": "^4.4.0"
+        },
+        "devDependencies": {
+                "q": "^1.4.1"
+        },
+        "scripts": {}
 }
