@@ -5,8 +5,8 @@ var spawn = require('child_process').spawn,
 ** Params :
 ** {
 **   host: 'domain.com', // Required
-**   username: 'Test', // Required
-**   password: 'Test', // Required
+**   username: 'Test', // Optional. Use empty username for anonymous access. 
+**   password: 'Test', // Required if username is not empty, except when requiresPassword: false
 **   protocol: 'sftp', // Optional, values : 'ftp', 'sftp', 'ftps', ... default: 'ftp'
 **   // protocol is added on beginning of host, ex : sftp://domain.com in this case
 **   port: '22', // Optional
@@ -33,6 +33,7 @@ var FTP = function (options) {
 FTP.prototype.initialize = function (options) {
 	var defaults = {
 		host: '',
+                protocol: 'ftp',
 		username: '',
 		password: '',
 		escape: true,
@@ -51,16 +52,14 @@ FTP.prototype.initialize = function (options) {
 
 	// Validation
 	if (!opts.host) throw new Error('You need to set a host.');
-	if (!opts.username) throw new Error('You need to set an username.');
-	if (opts.requiresPassword === true && !opts.password) throw new Error('You need to set a password.');
-	if (options.protocol && typeof options.protocol !== 'string') throw new Error('Protocol needs to be of type string.');
+	if (opts.username && opts.requiresPassword === true && !opts.password) throw new Error('You need to set a password.');
+	if (opts.protocol && typeof opts.protocol !== 'string') throw new Error('Protocol needs to be of type string.');
 
 	// Setting options
-	if (options.protocol && opts.host.indexOf(options.protocol + '://') !== 0)
-		opts.host = options.protocol + '://' + options.host;
+	if (opts.protocol && opts.host.indexOf(opts.protocol + '://') !== 0)
+		opts.host = opts.protocol + '://' + opts.host;
   	if (opts.port)
 		opts.host = opts.host + ':' + opts.port;
-
 	this.options = opts;
 };
 
@@ -72,7 +71,29 @@ FTP.prototype._escapeshell = function(cmd) {
 	if (this.options.escape) {
 		return this.escapeshell(cmd);
 	}
-	return cmd;
+        return cmd;
+};
+
+FTP.prototype.prepareLFTPOptions = function() {
+        var opts = [];
+
+ 	// Only support SFTP or FISH for ssl autoConfirm
+	if((this.options.protocol.toLowerCase() === "sftp" || this.options.protocol.toLowerCase() === "fish") && this.options.autoConfirm)
+		opts.push('set ' + this.options.protocol.toLowerCase() + ':auto-confirm yes');
+
+	opts.push('set net:max-retries ' + this.options.retries);
+	opts.push('set net:timeout ' + this.options.timeout);
+	opts.push('set net:reconnect-interval-base ' + this.options.retryInterval);
+	opts.push('set net:reconnect-interval-multiplier ' + this.options.retryIntervalMultiplier);
+	opts.push(this.options.additionalLftpCommands);
+	
+        var open = 'open'
+	if (this.options.username) {
+		open += ' -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '"';
+	}
+	open += ' "' + this.options.host + '"';
+        opts.push(open);
+        return opts;
 };
 
 FTP.prototype.exec = function (cmds, callback) {
@@ -85,19 +106,7 @@ FTP.prototype.exec = function (cmds, callback) {
 	if (!callback)
 		throw new Error('Callback is missing to exec() function.');
 
-	var cmd = '';
-
-	// Only support SFTP or FISH for ssl autoConfirm
-	if((this.options.protocol.toLowerCase() === "sftp" || this.options.protocol.toLowerCase() === "fish") && this.options.autoConfirm)
-		cmd += 'set ' + this.options.protocol.toLowerCase() + ':auto-confirm yes;';
-
-	cmd += 'set net:max-retries ' + this.options.retries + ';';
-	cmd += 'set net:timeout ' + this.options.timeout + ';';
-	cmd += 'set net:reconnect-interval-base ' + this.options.retryInterval + ';';
-	cmd += 'set net:reconnect-interval-multiplier ' + this.options.retryIntervalMultiplier + ';';
-	cmd += this.options.additionalLftpCommands + ";";
-	cmd += 'open -u "'+ this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '" "' + this.options.host + '";';
-	cmd += this.cmds.join(';');
+	var cmd = this.prepareLFTPOptions().concat(this.cmds).join(';');
 	this.cmds = [];
 
 	var spawnoptions;

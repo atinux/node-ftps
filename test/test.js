@@ -16,7 +16,8 @@ describe('FTPS', function() {
       };
       // expectedDefaults as configured in initialize
       var expectedDefaults = {
-        host: fakeOptions.host,
+        host: 'ftp://' + fakeOptions.host,
+        protocol: 'ftp',
         username: fakeOptions.username,
         password: '',
         escape: true,
@@ -42,16 +43,29 @@ describe('FTPS', function() {
         assert.equal("Error: You need to set a host.", ex);
       }
     });
-    it('should throw an error when username is not set', function() {
+    it('should not throw an error when username is not set', function() {
       var fakeOptionsNoUsername = {
         host:'foobar'
       };
-      try {
-        var ftpsWithoutUsername = new FTPS(fakeOptionsNoUsername);
-      }
-      catch (ex) {
-        assert.equal("Error: You need to set an username.", ex);
-      }
+      var ftpsWithoutUsername = new FTPS(fakeOptionsNoUsername);
+    });
+    it('should not pass user,pass to lftp when username is empty', function() {
+      var fakeOptionsNoUsername = {
+        host:'foobar'
+      };
+      var ftpsWithoutUsername = new FTPS(fakeOptionsNoUsername);
+      var cmd = ftpsWithoutUsername.prepareLFTPOptions();
+      assert.equal(cmd[cmd.length-1], 'open "ftp://foobar"')
+    });
+    it('should pass user,pass to lftp when username is not empty', function() {
+      var fakeOptionsNoUsername = {
+        host:'foobar',
+        username: 'user',
+        password: 'pass'
+      };
+      var ftpsWithoutUsername = new FTPS(fakeOptionsNoUsername);
+      var cmd = ftpsWithoutUsername.prepareLFTPOptions();
+      assert.equal(cmd[cmd.length-1], 'open -u "user","pass" "ftp://foobar"')
     });
     it('should throw an error when password is not set & requiresPassword is true', function() {
       var fakeOptionsWithoutPassword = {
