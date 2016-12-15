@@ -1,5 +1,10 @@
 node-ftps
 =========
+<p>
+  <a href="https://www.npmjs.com/package/ftps"><img src="https://img.shields.io/npm/v/ftps.svg" alt="Version"></a>
+  <a href="https://www.npmjs.com/package/ftps"><img src="https://img.shields.io/npm/dt/ftps.svg" alt="Downloads"></a>
+  <a href="https://www.npmjs.com/package/ftps"><img src="https://img.shields.io/npm/l/ftps.svg" alt="License"></a>
+</p>
 
 FTP, FTPS and SFTP client for node.js, mainly a `lftp` wrapper.
 
