@@ -1,2 +1,19 @@
-node_modules/
-examples/
+# Filesystem
+*~
+#*#
+.DS_Store
+
+# dependencies
+yarn.lock
+node_modules
+
+# logs
+npm-debug.log
+
+# Examples
+examples
+
+# Coverage support
+coverage
+*.lcov
+.nyc_output
