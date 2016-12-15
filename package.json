@@ -1,6 +1,6 @@
 {
   "name": "ftps",
-  "version": "0.6.1",
+  "version": "1.0.0",
   "scripts": {
     "lint": "eslint index.js test/",
     "test": "mocha",
