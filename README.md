@@ -1,6 +1,7 @@
 node-ftps
 =========
 <p>
+  <a href="https://travis-ci.org/Atinux/node-ftps"><img src="https://travis-ci.org/Atinux/node-ftps.svg?branch=master" alt="Build Status"></a>
   <a href="https://www.npmjs.com/package/ftps"><img src="https://img.shields.io/npm/v/ftps.svg" alt="Version"></a>
   <a href="https://www.npmjs.com/package/ftps"><img src="https://img.shields.io/npm/dt/ftps.svg" alt="Downloads"></a>
   <a href="https://www.npmjs.com/package/ftps"><img src="https://img.shields.io/npm/l/ftps.svg" alt="License"></a>
