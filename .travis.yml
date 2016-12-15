@@ -6,6 +6,7 @@ node_js:
   - "4.7"
   - "0.12"
 install:
+  - sudo apt-get install lftp
   - npm install
 script:
   - npm test
