@@ -172,16 +172,16 @@ FTP.prototype.put = function (localPath, remotePath) {
 	if (!localPath)
 		return this;
 	if (!remotePath)
-		return this.raw('put '+this._escapeshell(localPath));
-	return this.raw('put '+this._escapeshell(localPath)+' -o '+this._escapeshell(remotePath));
+		return this.raw('put ' + this._escapeshell(localPath));
+	return this.raw('put ' + this._escapeshell(localPath) + ' -O ' + this._escapeshell(remotePath));
 };
 FTP.prototype.addFile = FTP.prototype.put;
 FTP.prototype.get = function (remotePath, localPath) {
 	if (!remotePath)
 		return this;
 	if (!localPath)
-		return this.raw('get '+this._escapeshell(remotePath));
-	return this.raw('get '+this._escapeshell(remotePath)+' -o '+this._escapeshell(localPath));
+		return this.raw('get ' + this._escapeshell(remotePath));
+	return this.raw('get ' + this._escapeshell(remotePath) + ' -O ' + this._escapeshell(localPath));
 };
 FTP.prototype.getFile = FTP.prototype.get;
 FTP.prototype.mv = function (from, to) {
