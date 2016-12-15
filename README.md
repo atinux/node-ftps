@@ -16,9 +16,20 @@ You need to have the executable `lftp` installed on your computer.
 
 [LFTP Homepage](http://lftp.yar.ru/)
 
-[LFTP For Windows](https://nwgat.ninja/lftp-for-windows/)
-
-OSX install [brew](http://brew.sh/) then `brew install lftp`
+**Windows** ([Chocolatey](https://chocolatey.org/))
+```cmd
+C:\> choco install lftp
+```
+**OSX** ([Homebrew](http://brew.sh/))
+```bash
+sudo brew install lftp
+```
+**Linux**
+```bash
+sudo apt-get install lftp
+# or
+sudo yum install lftp
+```
 
 Installation
 -----------
