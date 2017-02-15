@@ -17,3 +17,6 @@ examples
 coverage
 *.lcov
 .nyc_output
+
+# IDE default folder
+.idea/*
