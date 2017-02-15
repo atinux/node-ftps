@@ -22,7 +22,9 @@ var dcp = require('duplex-child-process')
  **   requiresPassword: true, // Optional, defaults to true
  **   autoConfirm: true, // Optional, defaults to false
  **   cwd: '', // Optional, defaults to the directory from where the script is executed
- **   additionalLftpCommands: '' // Additional commands to pass to lftp, splitted by ';'
+ **   additionalLftpCommands: '', // Additional commands to pass to lftp, splitted by ';'
+ **   requireSSHKey: false, // This option for SFTP Protocol with ssh key authentication
+ **   sshKeyPath: '' // ssh key path for, SFTP Protocol with ssh key authentication
  ** }
  **
  ** Usage :
@@ -49,12 +51,12 @@ FTP.prototype.initialize = function (options) {
     autoConfirm: false, // Auto confirm ssl certificate,
     cwd: '', // Use a different working directory
     additionalLftpCommands: '', // Additional commands to pass to lftp, splitted by ';'
-    requireSSHKey:  false, // This option for SFTP Protocol with ssh key authentication
+    requireSSHKey: false, // This option for SFTP Protocol with ssh key authentication
     sshKeyPath: '' // ssh key path for, SFTP Protocol with ssh key authentication
   }
 
   // Extend options with defaults
-  var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands','requireSSHKey','sshKeyPath')
+  var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands', 'requireSSHKey', 'sshKeyPath')
 
   // Validation
   if (!opts.host) throw new Error('You need to set a host.')

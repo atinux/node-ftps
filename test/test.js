@@ -28,7 +28,9 @@ describe('FTPS', function () {
         requiresPassword: fakeOptions.requiresPassword,
         autoConfirm: false,
         cwd: '',
-        additionalLftpCommands: ''
+        additionalLftpCommands: '',
+        requireSSHKey: false,
+        sshKeyPath: ''
       }
       // initialize and grab the options from FTPS
       var ftpsDefaultOptions = new FTPS(fakeOptions).options
