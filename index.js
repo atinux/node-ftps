@@ -48,16 +48,19 @@ FTP.prototype.initialize = function (options) {
     requiresPassword: true, // Supports Anonymous FTP
     autoConfirm: false, // Auto confirm ssl certificate,
     cwd: '', // Use a different working directory
-    additionalLftpCommands: '' // Additional commands to pass to lftp, splitted by ';'
+    additionalLftpCommands: '', // Additional commands to pass to lftp, splitted by ';'
+    requireSSHKey:  false, // This option for SFTP Protocol with ssh key authentication
+    sshKeyPath: '' // ssh key path for, SFTP Protocol with ssh key authentication
   }
 
   // Extend options with defaults
-  var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands')
+  var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands','requireSSHKey','sshKeyPath')
 
   // Validation
   if (!opts.host) throw new Error('You need to set a host.')
   if (opts.username && opts.requiresPassword === true && !opts.password) throw new Error('You need to set a password.')
   if (opts.protocol && typeof opts.protocol !== 'string') throw new Error('Protocol needs to be of type string.')
+  if (opts.requireSSHKey === true && !opts.sshKeyPath) throw new Error('You need to set a ssh key path.');
 
   // Setting options
   if (opts.protocol && opts.host.indexOf(opts.protocol + '://') !== 0) {
@@ -89,6 +92,10 @@ FTP.prototype.prepareLFTPOptions = function () {
   // Only support SFTP or FISH for ssl autoConfirm
   if ((this.options.protocol.toLowerCase() === 'sftp' || this.options.protocol.toLowerCase() === 'fish') && this.options.autoConfirm) {
     opts.push('set ' + this.options.protocol.toLowerCase() + ':auto-confirm yes')
+  }
+  // Only support SFTP for openSSH key authentication
+  if(this.options.protocol.toLowerCase() === "sftp" && this.options.requireSSHKey){
+    opts.push('set sftp:connect-program "ssh -a -x -i '+this.options.sshKeyPath+'"')
   }
   opts.push('set net:max-retries ' + this.options.retries)
   opts.push('set net:timeout ' + this.options.timeout)

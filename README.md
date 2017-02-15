@@ -59,7 +59,9 @@ var ftps = new FTPS({
   requiresPassword: true, // Optional, defaults to true
   autoConfirm: true, // Optional, is used to auto confirm ssl questions on sftp or fish protocols, defaults to false
   cwd: '', // Optional, defaults to the directory from where the script is executed
-  additionalLftpCommands: '' // Additional commands to pass to lftp, splitted by ';'
+  additionalLftpCommands: '', // Additional commands to pass to lftp, splitted by ';'
+  requireSSHKey:  true, //  Optional, defaults to false, This option for SFTP Protocol with ssh key authentication
+  sshKeyPath: '/home1/phrasee/id_dsa' // Required if requireSSHKey: true , defaults to empty string, This option for SFTP Protocol with ssh key authentication
 });
 // Do some amazing things
 ftps.cd('some_directory').addFile(__dirname + '/test.txt').exec(console.log);
@@ -133,5 +135,7 @@ var ftps = new lftp(config)
 var stream = ftps.raw('find').execAsStream()
 stream.pipe(process.stdout)
 ```
+
+
 
 PS: Any pull requests are welcome :-)
