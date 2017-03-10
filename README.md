@@ -91,32 +91,6 @@ ftps.mirror({
 })
 ```
 
-
-Note on Using LFPT Commands
-------------------
-
-Normally in the lfpt cli you would make a file of `set` commands and pass that file name into lfpt with the `-c` option. However, ftps will do that for you with the `additionalLftpCommands` option.
-
-For instance, to connect to a legacy sftp server you can do:
-
-```JS
-
-const ftps = new FTPS({
-  // ...
-  additionalLftpCommands: 'set sftp:connect-program "ssh -a -x -o KexAlgorithms=diffie-hellman-group1-sha1"', 
-  // Additional commands to pass to lftp, splitted by ';' 
-  requireSSHKey: false,
-});
-
-// this is helpful for people getting the DH GEX group out of range error
-
-```
-
-This is also instead of making a `~/.lftprc` file. As you can see, you just put anything that would go into the command file into the option separated by a `;`.
-
------
-
-
 If you want to escape some arguments because you used "escape: false" in the options:
 ```js
 ftps.escapeshell('My folder');
@@ -161,6 +135,34 @@ var ftps = new lftp(config)
 var stream = ftps.raw('find').execAsStream()
 stream.pipe(process.stdout)
 ```
+
+
+
+Note on Using LFPT Commands
+------------------
+
+Normally in the lfpt cli you would make a file of `set` commands and pass that file name into lfpt with the `-c` option. However, ftps will do that for you with the `additionalLftpCommands` option.
+
+For instance, to connect to a legacy sftp server you can do:
+
+```JS
+
+const ftps = new FTPS({
+  // ...
+  additionalLftpCommands: 'set sftp:connect-program "ssh -a -x -o KexAlgorithms=diffie-hellman-group1-sha1"', 
+  // Additional commands to pass to lftp, splitted by ';' 
+  requireSSHKey: false,
+});
+
+// this is helpful for people getting the DH GEX group out of range error
+
+```
+
+This is also instead of making a `~/.lftprc` file. As you can see, you just put anything that would go into the command file into the option separated by a `;`.
+
+Additional command can be found [here](http://lftp.tech/lftp-man.html) or by running `man lftp`.
+
+-----
 
 
 
