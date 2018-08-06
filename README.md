@@ -9,10 +9,6 @@ node-ftps
 
 FTP, FTPS and SFTP client for node.js, mainly a `lftp` wrapper.
 
-<a target='_blank' rel='nofollow' href='https://app.codesponsor.io/link/htiWA79uE8uubJymVd58XjBi/Atinux/node-ftps'>
-  <img alt='Sponsor' width='888' height='68' src='https://app.codesponsor.io/embed/htiWA79uE8uubJymVd58XjBi/Atinux/node-ftps.svg' />
-</a>
-
 Requirements
 ------------
 
