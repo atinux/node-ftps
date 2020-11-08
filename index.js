@@ -24,7 +24,8 @@ var dcp = require('duplex-child-process')
  **   cwd: '', // Optional, defaults to the directory from where the script is executed
  **   additionalLftpCommands: '', // Additional commands to pass to lftp, splitted by ';'
  **   requireSSHKey: false, // This option for SFTP Protocol with ssh key authentication
- **   sshKeyPath: '' // ssh key path for, SFTP Protocol with ssh key authentication
+ **   sshKeyPath: '', // ssh key path for, SFTP Protocol with ssh key authentication
+ **   sshKeyOptions: '' // ssh key options such as 'StrictHostKeyChecking=no'
  ** }
  **
  ** Usage :
@@ -52,11 +53,12 @@ FTP.prototype.initialize = function (options) {
     cwd: '', // Use a different working directory
     additionalLftpCommands: '', // Additional commands to pass to lftp, splitted by ';'
     requireSSHKey: false, // This option for SFTP Protocol with ssh key authentication
-    sshKeyPath: '' // ssh key path for, SFTP Protocol with ssh key authentication
+    sshKeyPath: '', // ssh key path for, SFTP Protocol with ssh key authentication\
+    sshKeyOptions: '' // ssh key options such as 'StrictHostKeyChecking=no'
   }
 
   // Extend options with defaults
-  var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands', 'requireSSHKey', 'sshKeyPath')
+  var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands', 'requireSSHKey', 'sshKeyPath', 'sshKeyOptions')
 
   // Validation
   if (!opts.host) throw new Error('You need to set a host.')
@@ -97,7 +99,11 @@ FTP.prototype.prepareLFTPOptions = function () {
   }
   // Only support SFTP for openSSH key authentication
   if(this.options.protocol.toLowerCase() === "sftp" && this.options.requireSSHKey){
-    opts.push('set sftp:connect-program "ssh -a -x -i '+this.options.sshKeyPath+'"')
+    var extra = ''
+    if (this.options.sshKeyOptions) {
+      extra = ' -o ' + this.options.sshKeyOptions
+    }
+    opts.push('set sftp:connect-program "ssh' + extra + ' -a -x -i '+this.options.sshKeyPath+'"')
   }
   opts.push('set net:max-retries ' + this.options.retries)
   opts.push('set net:timeout ' + this.options.timeout)
