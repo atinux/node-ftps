@@ -112,7 +112,7 @@ ftps.exec(function (err, res) {
   // err will be null (to respect async convention)
   // res is an hash with { error: stderr || null, data: stdout }
 });
-// exec() return the child process of the spwan() method
+// exec() return the child process of the spawn() method
 ```
 
 Also, take note that if a command fails it will not stop the next commands from executing, for example:
@@ -138,10 +138,10 @@ stream.pipe(process.stdout)
 
 
 
-Note on Using LFPT Commands
+Note on Using LFTP Commands
 ------------------
 
-Normally in the lfpt cli you would make a file of `set` commands and pass that file name into lfpt with the `-c` option. However, ftps will do that for you with the `additionalLftpCommands` option.
+Normally in the lftp cli you would make a file of `set` commands and pass that file name into lftp with the `-c` option. However, ftps will do that for you with the `additionalLftpCommands` option.
 
 For instance, to connect to a legacy sftp server you can do:
 
