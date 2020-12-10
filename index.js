@@ -88,6 +88,13 @@ FTP.prototype._escapeshell = function (cmd) {
   return cmd
 }
 
+FTP.prototype._escapequote = function (cmd) {
+  if (typeof cmd !== 'string') {
+    return ''
+  }
+  return cmd.replace(/(")/g, '\\"')
+}
+
 FTP.prototype.prepareLFTPOptions = function () {
   var opts = []
 
@@ -107,7 +114,7 @@ FTP.prototype.prepareLFTPOptions = function () {
 
   var open = 'open'
   if (this.options.username) {
-    open += ' -u "' + this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '"'
+    open += ' -u "' + this._escapequote(this.options.username) + '","' + this._escapequote(this.options.password) + '"'
   }
   open += ' "' + this.options.host + '"'
   opts.push(open)
