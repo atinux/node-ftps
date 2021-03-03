@@ -73,7 +73,6 @@ FTP.prototype.initialize = function (options) {
     opts.host = opts.host + ':' + opts.port
   }
   this.options = opts
-  console.log(this.options)
 }
 
 FTP.prototype.escapeshell = function (cmd) {
