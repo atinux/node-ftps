@@ -269,4 +269,8 @@ FTP.prototype.mirror = function (opts) {
   return this.raw(raw)
 }
 
+FTP.prototype.mkdir = function (directory, mode) {
+  return this.raw('mkdir ' + mode + ' ' + directory)
+};
+
 module.exports = FTP
