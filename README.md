@@ -81,6 +81,7 @@ ftps.put(pathToLocalFile, [pathToRemoteFile]) // alias: addFile
 ftps.get(pathToRemoteFile, [pathToLocalFile]) // download remote file and save to local path (if not given, use same name as remote file), alias: getFile
 ftps.mv(from, to) // alias move
 ftps.rm(file1, file2, ...) // alias remove
+ftps.mkdir(pathToNewDir, mode)
 ftps.rmdir(directory1, directory2, ...)
 ftps.mirror({
   remoteDir: '.', // optional, default: .
