@@ -99,10 +99,14 @@ FTP.prototype.prepareLFTPOptions = function () {
   }
   // Only support SFTP for openSSH key authentication
   if(this.options.protocol.toLowerCase() === "sftp" && this.options.requireSSHKey){
-    var extra = ''
-    if (this.options.sshKeyOptions) {
-      extra = ' -o ' + this.options.sshKeyOptions
-    }
+    var extra = (this.options.sshKeyOptions || '')
+      .split(' ')
+      .filter(Boolean)
+      .map(function (extra) {
+        return ' -o ' + extra
+      })
+      .join('')
+
     opts.push('set sftp:connect-program "ssh' + extra + ' -a -x -i '+this.options.sshKeyPath+'"')
   }
   opts.push('set net:max-retries ' + this.options.retries)
