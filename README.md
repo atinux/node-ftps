@@ -61,7 +61,8 @@ var ftps = new FTPS({
   cwd: '', // Optional, defaults to the directory from where the script is executed
   additionalLftpCommands: '', // Additional commands to pass to lftp, splitted by ';'
   requireSSHKey:  true, //  Optional, defaults to false, This option for SFTP Protocol with ssh key authentication
-  sshKeyPath: '/home1/phrasee/id_dsa' // Required if requireSSHKey: true , defaults to empty string, This option for SFTP Protocol with ssh key authentication
+  sshKeyPath: '/home1/phrasee/id_dsa', // Required if requireSSHKey: true , defaults to empty string, This option for SFTP Protocol with ssh key authentication
+  sshKeyOptions: '' // ssh key options such as 'StrictHostKeyChecking=no'
 });
 // Do some amazing things
 ftps.cd('some_directory').addFile(__dirname + '/test.txt').exec(console.log);
@@ -149,8 +150,8 @@ For instance, to connect to a legacy sftp server you can do:
 
 const ftps = new FTPS({
   // ...
-  additionalLftpCommands: 'set sftp:connect-program "ssh -a -x -o KexAlgorithms=diffie-hellman-group1-sha1"', 
-  // Additional commands to pass to lftp, splitted by ';' 
+  additionalLftpCommands: 'set sftp:connect-program "ssh -a -x -o KexAlgorithms=diffie-hellman-group1-sha1"',
+  // Additional commands to pass to lftp, splitted by ';'
   requireSSHKey: false,
 });
 

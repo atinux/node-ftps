@@ -9,7 +9,8 @@ var dcp = require('duplex-child-process')
  ** {
  **   host: 'domain.com', // Required
  **   username: 'Test', // Optional. Use empty username for anonymous access.
- **   password: 'Test', // Required if username is not empty, except when requiresPassword: false
+ **   password: 'Test', // Required if username is not empty, except when requiresPassword: false,
+ **   bareCredentials: 'Test,Test$T', // Used instead of username/password for special cases where passwords should not be escaped
  **   protocol: 'sftp', // Optional, values : 'ftp', 'sftp', 'ftps', ... default: 'ftp'
  **   // protocol is added on beginning of host, ex : sftp://domain.com in this case
  **   port: '22', // Optional
@@ -24,7 +25,8 @@ var dcp = require('duplex-child-process')
  **   cwd: '', // Optional, defaults to the directory from where the script is executed
  **   additionalLftpCommands: '', // Additional commands to pass to lftp, splitted by ';'
  **   requireSSHKey: false, // This option for SFTP Protocol with ssh key authentication
- **   sshKeyPath: '' // ssh key path for, SFTP Protocol with ssh key authentication
+ **   sshKeyPath: '', // ssh key path for, SFTP Protocol with ssh key authentication
+ **   sshKeyOptions: '' // ssh key options such as 'StrictHostKeyChecking=no'
  ** }
  **
  ** Usage :
@@ -42,6 +44,7 @@ FTP.prototype.initialize = function (options) {
     protocol: 'ftp',
     username: '',
     password: '',
+    bareCredentials: '',
     escape: true,
     retries: 1, // LFTP by default tries an unlimited amount of times so we change that here
     timeout: 10, // Time before failing a connection attempt
@@ -52,15 +55,16 @@ FTP.prototype.initialize = function (options) {
     cwd: '', // Use a different working directory
     additionalLftpCommands: '', // Additional commands to pass to lftp, splitted by ';'
     requireSSHKey: false, // This option for SFTP Protocol with ssh key authentication
-    sshKeyPath: '' // ssh key path for, SFTP Protocol with ssh key authentication
+    sshKeyPath: '', // ssh key path for, SFTP Protocol with ssh key authentication\
+    sshKeyOptions: '' // ssh key options such as 'StrictHostKeyChecking=no'
   }
 
   // Extend options with defaults
-  var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands', 'requireSSHKey', 'sshKeyPath')
+  var opts = _.pick(_.extend(defaults, options), 'host', 'username', 'password', 'bareCredentials', 'port', 'escape', 'retries', 'timeout', 'retryInterval', 'retryIntervalMultiplier', 'requiresPassword', 'protocol', 'autoConfirm', 'cwd', 'additionalLftpCommands', 'requireSSHKey', 'sshKeyPath', 'sshKeyOptions')
 
   // Validation
   if (!opts.host) throw new Error('You need to set a host.')
-  if (opts.username && opts.requiresPassword === true && !opts.password) throw new Error('You need to set a password.')
+  if (opts.username && opts.requiresPassword === true && !opts.password && !opts.bareCredentials) throw new Error('You need to set a password.')
   if (opts.protocol && typeof opts.protocol !== 'string') throw new Error('Protocol needs to be of type string.')
   if (opts.requireSSHKey === true && !opts.sshKeyPath) throw new Error('You need to set a ssh key path.');
 
@@ -97,7 +101,15 @@ FTP.prototype.prepareLFTPOptions = function () {
   }
   // Only support SFTP for openSSH key authentication
   if(this.options.protocol.toLowerCase() === "sftp" && this.options.requireSSHKey){
-    opts.push('set sftp:connect-program "ssh -a -x -i '+this.options.sshKeyPath+'"')
+    var extra = (this.options.sshKeyOptions || '')
+      .split(' ')
+      .filter(Boolean)
+      .map(function (extra) {
+        return ' -o ' + extra
+      })
+      .join('')
+
+    opts.push('set sftp:connect-program "ssh' + extra + ' -a -x -i '+this.options.sshKeyPath+'"')
   }
   opts.push('set net:max-retries ' + this.options.retries)
   opts.push('set net:timeout ' + this.options.timeout)
@@ -106,7 +118,10 @@ FTP.prototype.prepareLFTPOptions = function () {
   opts.push(this.options.additionalLftpCommands)
 
   var open = 'open'
-  if (this.options.username) {
+  if (this.options.bareCredentials) {
+    open += ' -u \'' + this.options.bareCredentials + '\''
+  }
+  else if (this.options.username) {
     open += ' -u "' + this._escapeshell(this.options.username) + '","' + this._escapeshell(this.options.password) + '"'
   }
   open += ' "' + this.options.host + '"'
