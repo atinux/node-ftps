@@ -47,6 +47,7 @@ var ftps = new FTPS({
   host: 'domain.com', // required
   username: 'Test', // Optional. Use empty username for anonymous access.
   password: 'Test', // Required if username is not empty, except when requiresPassword: false
+  bareCredentials: 'Test,Test$T', // Used instead of username/password for special cases where passwords should not be escaped
   protocol: 'sftp', // Optional, values : 'ftp', 'sftp', 'ftps', ... default: 'ftp'
   // protocol is added on beginning of host, ex : sftp://domain.com in this case
   port: 22, // Optional
